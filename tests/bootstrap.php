@@ -4,5 +4,5 @@
  * @copyright 2012-2018 Tom Butler <tom@r.je> | https:// r.je/dice.html *
  * @license http:// www.opensource.org/licenses/bsd-license.php BSD License *
  * @version 3.0 */
-require_once 'Dice.php';
-require_once 'tests/DiceTest.php';
+require_once __DIR__ . '/../Dice.php';
+require_once __DIR__ . '/DiceTest.php';
