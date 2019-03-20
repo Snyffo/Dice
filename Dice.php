@@ -16,6 +16,11 @@ class Dice {
 	private $rules = [];
 
 	/**
+	 * @var array $tags Tagged classes
+	 */
+	private $tags = [];
+
+	/**
 	 * @var array $cache A cache of closures based on class name so each class is only reflected once
 	 */
 	private $cache = [];
@@ -41,6 +46,16 @@ class Dice {
 		if (isset($rule['substitutions'])) foreach($rule['substitutions'] as $key => $value) $rule['substitutions'][ltrim($key,  '\\')] = $value;
 
 		$dice = clone $this;
+
+		if ($name !== '*' && isset($rule['tag'])) {
+			$tag = $rule['tag'];
+			$classes = $dice->tags[$tag] ?? [];
+			if (!in_array($name, $classes, true)) {
+				$classes[] = $name;
+				$dice->tags[$tag] = $classes;
+			}
+		}
+
 		$dice->rules[ltrim(strtolower($name), '\\')] = array_replace_recursive($dice->getRule($name), $rule);
 
 		return $dice;
@@ -75,6 +90,19 @@ class Dice {
 		}
 		// No rule has matched, return the default rule if it's set
 		return isset($this->rules['*']) ? $this->rules['*'] : [];
+	}
+
+	/**
+	 * Returns a collection of fully constructed objects tagged with $tag
+	 *
+	 * @param string $tag
+	 *
+	 * @return \Generator
+	 */
+	public function getAll(string $tag): \Generator{
+		foreach ($this->tags[$tag] ?? [] as $name) {
+			yield $this->create($name);
+		}
 	}
 
 	/**
