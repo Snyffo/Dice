@@ -15,7 +15,7 @@ class BasicTest extends DiceTest {
 
 	public function testCreateInvalid() {
 		//"can't expect default exception". Not sure why.
-		$this->expectException('ErrorException');
+		$this->expectException('Error');
 		try {
 			$this->dice->create('SomeClassThatDoesNotExist');
 		}
