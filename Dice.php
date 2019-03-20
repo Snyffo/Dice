@@ -95,7 +95,13 @@ class Dice {
 		if (!empty($this->instances[$name])) return $this->instances[$name];
 
 		// Create a closure for creating the object if there isn't one already
-		if (empty($this->cache[$name])) $this->cache[$name] = $this->getClosure($name, $this->getRule($name));
+		if (empty($this->cache[$name])) {
+            try {
+                $this->cache[ $name ] = $this->getClosure( $name, $this->getRule( $name ) );
+            } catch ( \ReflectionException $e ) {
+                throw new \Error("Class \'{$name}\' not found", 0, $e);
+            }
+        }
 
 		// Call the cached closure which will return a fully constructed object of type $name
 		return $this->cache[$name]($args, $share);
